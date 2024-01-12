@@ -2,6 +2,7 @@
 
 ## References
 
+```bibtex
 @inproceedings{stowe-2022,
     title = "IMPLI: Investigating NLI Models' Performance on Figurative Language",
     author = "Stowe, Kevin and Utama, Prasetya Ajie, and Gurevytch, Iryna",
@@ -11,3 +12,4 @@
     publisher = "Association for Computational Linguistics",
     url = "tbd",
 }
+```
