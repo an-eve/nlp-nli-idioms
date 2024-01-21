@@ -1,0 +1,69 @@
+#!/bin/bash
+
+[[ $# -ge 2 ]] && input_file1="$1" && input_file2="$2" || exit
+[[ $# -ge 4 ]] && output_file1="$3" && output_file2="$4" || \
+	output_file1="${input_file1:0:-4}_out.tsv" && output_file2="${input_file2:0:-4}_out.tsv"
+## [[ $# -ge 2 ]] && output_file="$2" || output_file="${file_to_process:0:-4}_out.tsv"
+
+[[ -e "$output_file1" ]] || touch "$output_file1"
+[[ -e "$output_file2" ]] || touch "$output_file2"
+
+while read line
+do
+	clear
+	if [[ $(cat "$output_file1" "$output_file2" | grep -c "$line") -le 0 ]]
+	then
+		echo "$line"
+		read -p "Use an idiom in this example? [Y/n]" -i "Y" use_idiom <&1
+	else
+		use_idiom="n"
+	fi
+	if [[ "$use_idiom" == "Y" || "$use_idiom" == "" ]]
+	then
+		while read -p "Type idiom to search: " pattern <&1 && [[ "$pattern" == "" ]] 
+		do 
+			:
+		done
+		
+		found_lines=$(cat "$input_file1" | grep "$pattern")
+		clear
+		echo "Idiom is \"${pattern}\""
+		output1=""
+		while read line2
+		do
+			if [[ $(cat "$output_file1" | grep -c "$line2") -le 0 ]]
+			then
+				echo "$line2"
+				read -p "Use this example? [Y/n]" -i "Y" use_sentence <&1
+			else
+				use_sentence="n"
+			fi
+			if [[ "$use_sentence" == "Y" || "$use_sentence" == ""  ]]
+			then
+				output1="${output1}${pattern}\t${line2}\n"
+			fi
+		done <<< "$found_lines"
+
+		found_lines=$(cat "$input_file2" | grep "$pattern")
+		clear
+		echo "Idiom is \"${pattern}\""
+		output2=""
+		while read line2
+		do
+			if [[ $(cat "$output_file2" | grep -c "$line2") -le 0 ]]
+			then
+				echo "$line2"
+				read -p "Use this example? [Y/n]" -i "Y" use_sentence <&1
+			else
+				use_sentence="n"
+			fi
+			if [[ "$use_sentence" == "Y" || "$use_sentence" == ""  ]]
+			then
+				output2="${output2}${pattern}\t${line2}\n"
+			fi
+		done <<< "$found_lines"
+
+		printf "$output1" >> "$output_file1"
+		printf "$output2" >> "$output_file2"
+	fi
+done <<< "$(cat ""$input_file1"" ""$input_file2"" | shuf)"
