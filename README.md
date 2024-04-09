@@ -1,5 +1,8 @@
 # Investigating BERT and RoBERTa Performances on Figurative Language
 
+RoBERTa: https://huggingface.co/an-eve/roberta-base-mnli-2-labels
+BERT: https://huggingface.co/an-eve/bert-base-uncased-mnli-2-labels
+
 ## References
 
 ```bibtex
